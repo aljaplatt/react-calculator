@@ -26,6 +26,14 @@ body {
 .output {
   /* top row - take up entire top row*/
   grid-column: 1 / -1;
+  border: 20px solid #2e2d2d;
 }
 
-/* TIME - 6.15 */
+button {
+  background-color: #2e2d2d;
+  color: #fff;
+  font-weight: 600;
+  font-size: 2rem;
+  cursor: pointer;
+}
+/* TIME - 6.15 NEEDS ADDITIONAL STYLING - 7.00*/
