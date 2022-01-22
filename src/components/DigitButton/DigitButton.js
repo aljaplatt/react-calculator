@@ -1,9 +1,14 @@
 import React from "react";
 import { ACTIONS } from "../App";
 
+/**
+ * dispatch allows us to call reducer from here
+ */
+
 function DigitButton({ dispatch, digit }) {
   return (
     <button
+      // onclick call dispatch
       onClick={() => dispatch({ type: ACTIONS.ADD_DIGIT, payload: { digit } })}
     >
       {digit}
@@ -14,5 +19,5 @@ function DigitButton({ dispatch, digit }) {
 export default DigitButton;
 
 /**
- * We have a button that has the { digit }, it has an onVlick that is calling the ADD.DIGIT fn, then passing along the digit we want to add.
+ * We have a button that has the { digit }, it has an onClick that is calling the dispatch fn ADD.DIGIT fn, then passing along the digit we want to add.
  */
