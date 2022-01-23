@@ -7,7 +7,7 @@ import OpButton from "../OpButton/OpButton";
 // ALL ACTIONS GLOBAL VARIABLE
 export const ACTIONS = {
   ADD_DIGIT: "add-digit",
-  CHOOSE_OP: "choose-op",
+  CHOOSE_OPERATION: "choose-operation",
   CLEAR: "clear",
   DELETE_DIGIT: "delete-digit",
   EVALUATE: "evaluate",
@@ -32,14 +32,14 @@ function App() {
           // digit is passed to reducer
           ...state,
           // if current op is null, default to empty string - take curr Op and add digit to it.
-          currentOperand: `${currOp || ""}${payload.digit}`,
+          currentOperand: `${currentOperand || ""}${payload.digit}`,
         };
-      case ACTIONS.CHOOSE_OP:
+      case ACTIONS.CHOOSE_OPERATION:
         // do nothing if a operator is clicked but the state is null
         if (state.currentOperand == null && state.preOp == null) {
           return state;
         }
-        // ???
+        // if our previousOp is null, but current op is not equal to null, passed the above check - then user has typed but no operand
         if (state.previousOperand == null) {
           return {
             ...state,
@@ -48,24 +48,63 @@ function App() {
             currentOperand: null,
           };
         }
+
+        return {
+          //
+          ...state,
+          previousOperand: evaluate(state),
+          operation: payload.operation,
+          currentOperand: null,
+        };
       case ACTIONS.CLEAR:
         // RETURN EMPTY STATE - remove everything
         return {};
+      default:
+        console.log(`Default message`);
     }
+  };
+
+  const evaluate = ({ currentOperand, previousOperand, operation }) => {
+    // convert these strings to numbers
+    const prev = parseFloat(previousOperand);
+    const current = parseFloat(currentOperand);
+    // if not a number , return empty string
+    if (isNaN(prev) || isNaN(current)) return "";
+    let computation = "";
+    switch (operation) {
+      case "+":
+        computation = prev + current;
+        break;
+      case "-":
+        computation = prev - current;
+        break;
+      case "*":
+        computation = prev * current;
+        break;
+      case "/":
+        computation = prev / current;
+        break;
+      default:
+        console.log(`Default message`);
+    }
+    return computation.toString();
   };
   /**
    * State has different variables -takes in reducer fn and default state {}
    */
-  const [{ currOp, preOp, op }, dispatch] = useReducer(reducer, {});
+  const [{ currentOperand, previousOperand, operation }, dispatch] = useReducer(
+    reducer,
+    {}
+  );
 
   return (
     <div className="calculator-grid">
       <div className="output">
         {/* state - use reducer - variables inserted into code */}
-        <div className="pre-op">
-          {preOp} {op}
+        <div className="previuos-operand">
+          {previousOperand} {operation}
         </div>
-        <div className="curr-op">{currOp}</div>
+        <div className="current-operand">{currentOperand}</div>
       </div>
       <button
         className="span-two"
@@ -88,7 +127,6 @@ function App() {
       <DigitButton digit="8" dispatch={dispatch} />
       <DigitButton digit="9" dispatch={dispatch} />
       <OpButton op="-" dispatch={dispatch} />
-      <OpButton op="/" dispatch={dispatch} />
       <DigitButton digit="." dispatch={dispatch} />
       <DigitButton digit="0" dispatch={dispatch} />
       <button className="span-two"> =</button>
